@@ -1,15 +1,15 @@
 var originalBoard;
-const HumanPlayer = "0";
-const BotPlayer = "X";
+const huPlayer = "O";
+const aiPlayer = "X";
 const winCombos = [
   [0, 1, 2],
   [3, 4, 5],
   [6, 7, 8],
-  [0, 4, 8],
-  [2, 4, 6],
   [0, 3, 6],
   [1, 4, 7],
   [2, 5, 8],
+  [0, 4, 8],
+  [6, 4, 2],
 ];
 
 const cells = document.querySelectorAll(".cell");
@@ -27,8 +27,8 @@ function startGame() {
 
 function turnClick(square) {
   if (typeof originalBoard[square.target.id] == "number") {
-    turn(square.target.id, HumanPlayer);
-    if (!checkTie()) turn(bestSpot(), BotPlayer);
+    turn(square.target.id, huPlayer);
+    if (!checkTie()) turn(bestSpot(), aiPlayer);
   }
 }
 
@@ -54,12 +54,12 @@ function checkWin(board, player) {
 function gameOver(gameWon) {
   for (let index of winCombos[gameWon.index]) {
     document.getElementById(index).style.backgroundColor =
-      gameWon.player == HumanPlayer ? "green" : "red";
+      gameWon.player == huPlayer ? "blue" : "red";
   }
-  for (var i = 0; i < cells.length(); i++) {
+  for (var i = 0; i < cells.length; i++) {
     cells[i].removeEventListener("click", turnClick, false);
   }
-  declareWinner(gameWon.player == HumanPlayer ? "YOY WON" : "YOU LOSE");
+  declareWinner(gameWon.player == huPlayer ? "You win!" : "You lose.");
 }
 
 function declareWinner(who) {
@@ -67,21 +67,21 @@ function declareWinner(who) {
   document.querySelector(".endgame .text").innerText = who;
 }
 
-function emptySquare() {
+function emptySquares() {
   return originalBoard.filter((s) => typeof s == "number");
 }
 
 function bestSpot() {
-  return emptySquare()[0];
+  return emptySquares()[0];
 }
 
 function checkTie() {
-  if (emptySquare().length == 0) {
+  if (emptySquares().length == 0) {
     for (var i = 0; i < cells.length; i++) {
-      cells[i].style.backgroundColor = "blue";
+      cells[i].style.backgroundColor = "green";
       cells[i].removeEventListener("click", turnClick, false);
     }
-    declareWinner("ITS TIE");
+    declareWinner("Tie Game!");
     return true;
   }
   return false;
